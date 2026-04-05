@@ -1,44 +1,44 @@
 # ⚔️ CosplayRPG
 
-**Il tuo badge cosplay RPG con schermo OLED — by [HexLions](https://github.com/HexLions)**
+**Your wearable cosplay RPG badge with OLED display — by [HexLions](https://github.com/HexLions)**
 
-> Un mini-dispositivo indossabile basato su ESP-01S + OLED 0.96" che genera una scheda RPG personalizzata dal tuo nome, mostra le tue stats e scarica in tempo reale le prossime fiere cosplay italiane.
+> A tiny wearable device based on ESP-01S + 0.96" OLED that generates a personalized RPG character card from your name and shows upcoming Italian cosplay conventions in real time.
 
 ---
 
 ## ✨ Features
 
-- **🎭 Scheda RPG personale** — Classe, livello (= la tua età!), barra XP e stats generate deterministicamente dal tuo nome
-- **📊 4 Statistiche** — Stamina, Craft, Style, Hype con barre animate
-- **📅 Eventi in tempo reale** — Scarica le fiere cosplay italiane dei prossimi 3 mesi da [cosplayersitaliani.it](https://www.cosplayersitaliani.it)
-- **⏰ Orologio NTP** — Ora sincronizzata via internet con data e giorno
-- **📶 Setup WiFi via browser** — Captive portal per configurazione senza app
-- **💾 Memoria persistente** — La rete WiFi viene salvata in EEPROM
-- **🔄 Carousel automatico** — Le schermate ciclano ogni 5 secondi
-- **🔥 Alert HOT!** — Gli eventi entro 7 giorni lampeggiano
+- **🎭 Personal RPG Card** — Class, level (= your age!), XP bar and stats deterministically generated from your name
+- **📊 4 Stats** — Stamina, Craft, Style, Hype with animated bars
+- **📅 Live Events** — Fetches upcoming Italian cosplay conventions from [cosplayersitaliani.it](https://www.cosplayersitaliani.it)
+- **⏰ NTP Clock** — Internet-synced time with date and weekday
+- **📶 Browser WiFi Setup** — Captive portal configuration, no app needed
+- **💾 Persistent Memory** — WiFi credentials saved to EEPROM
+- **🔄 Auto Carousel** — Screens cycle every 5 seconds
+- **🔥 HOT! Alerts** — Events within 7 days blink with countdown
 
 ---
 
-## 🖥️ Le Schermate
+## 🖥️ Screens
 
-| # | Schermata | Descrizione |
-|---|-----------|-------------|
-| 1 | **RPG Card** | Classe, livello, nome grande, barra XP, Stamina e Style |
-| 2 | **Stats** | Tutte e 4 le statistiche con barre e valori numerici |
-| 3 | **Eventi** | Carousel fiere cosplay con nome, luogo, data e countdown |
-| 4 | **Orologio** | Ora grande, data, giorno della settimana |
+| # | Screen | Description |
+|---|--------|-------------|
+| 1 | **RPG Card** | Class, level, large name, XP bar, Stamina and Style |
+| 2 | **Stats** | All 4 stats with progress bars and numeric values |
+| 3 | **Events** | Convention carousel with name, venue, date and countdown |
+| 4 | **Clock** | Large time display, date, weekday |
 
 ---
 
 ## 🔧 Hardware
 
-| Componente | Dettagli |
-|------------|----------|
-| Microcontrollore | **ESP-01S** (ESP8266, WiFi integrato) |
-| Display | **SSD1306** OLED 0.96" 128x64 pixel, I2C |
-| Alimentazione | 3.3V via micro-USB o power bank |
+| Component | Details |
+|-----------|---------|
+| Microcontroller | **ESP-01S** (ESP8266, built-in WiFi) |
+| Display | **SSD1306** OLED 0.96" 128x64 pixels, I2C |
+| Power | 3.3V via micro-USB or power bank |
 
-### Connessioni
+### Wiring
 
 ```
 ESP-01S          SSD1306
@@ -51,9 +51,9 @@ GND      ───►    GND
 
 ---
 
-## 📦 Librerie richieste
+## 📦 Required Libraries
 
-Installale da Arduino Library Manager:
+Install from Arduino Library Manager:
 
 - `Adafruit SSD1306`
 - `Adafruit GFX Library`
@@ -62,54 +62,54 @@ Installale da Arduino Library Manager:
 
 ---
 
-## ⚙️ Personalizzazione
+## ⚙️ Customization
 
-Modifica queste due righe nel file `.ino`:
+Edit these two lines in the `.ino` file:
 
 ```cpp
-#define CHAR_NAME      "NOME"          // max 8 caratteri, MAIUSCOLO
-#define CHAR_BIRTHDAY  "01/01/2000"    // GG/MM/AAAA
+#define CHAR_NAME      "NAME"          // max 8 chars, UPPERCASE
+#define CHAR_BIRTHDAY  "01/01/2000"    // DD/MM/YYYY
 ```
 
-Le stats vengono generate deterministicamente dall'hash del nome — lo stesso nome produce sempre gli stessi valori!
+Stats are deterministically generated from your name hash — the same name always produces the same values!
 
-### Classi disponibili
+### Available Classes
 
-La classe viene assegnata in base alle stats dominanti:
+Class is assigned based on dominant stats:
 
-| Classe | Condizione |
-|--------|-----------|
+| Class | Condition |
+|-------|-----------|
 | COSPLAYER | Style > 90 |
 | CRAFTER | Craft > 85 |
 | BARD | Hype > 90 |
-| WARRIOR, MAGE, ROGUE, PALADIN, RANGER | Assegnata dall'hash del nome |
+| WARRIOR, MAGE, ROGUE, PALADIN, RANGER | Assigned by name hash |
 
 ---
 
-## 📶 Configurazione WiFi
+## 📶 WiFi Setup
 
-1. Accendi il dispositivo — se non ha una rete salvata, crea un access point
-2. Connettiti alla rete **`CosplayRPG-Setup`** (password: `cosplay123`)
-3. Apri il browser → **`192.168.4.1`**
-4. Inserisci SSID e password della tua rete WiFi
-5. Il dispositivo si connette, sincronizza l'ora e scarica gli eventi
+1. Power on the device — if no network is saved, it creates an access point
+2. Connect to **`CosplayRPG-Setup`** (password: `cosplay123`)
+3. Open your browser → **`192.168.4.1`**
+4. Enter your WiFi SSID and password
+5. The device connects, syncs time and fetches events
 
-> La configurazione viene salvata in EEPROM e ricordata anche dopo lo spegnimento.
+> Configuration is saved to EEPROM and remembered even after power off.
 
 ---
 
 ## 🏗️ Build & Flash
 
-1. Apri `CosplayRPG.ino` in Arduino IDE
-2. Seleziona scheda: **Generic ESP8266 Module**
-3. Configura nome e data di nascita (vedi Personalizzazione)
-4. Flash via programmatore USB-seriale per ESP-01
+1. Open `CosplayRPG.ino` in Arduino IDE
+2. Select board: **Generic ESP8266 Module**
+3. Set your name and birthday (see Customization)
+4. Flash via USB-serial programmer for ESP-01
 
 ---
 
-## 📄 Licenza
+## 📄 License
 
-MIT — Usa, modifica e condividi liberamente.
+MIT — Use, modify and share freely.
 
 ---
 
