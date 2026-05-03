@@ -1,119 +1,129 @@
-# ⚔️ CosplayRPG
+# CosplayRPG 🎮
 
-**Your wearable cosplay RPG badge with OLED display — by [HexLions](https://github.com/HexLions)**
+> A personalized RPG-style OLED display for cosplayers — a geek gift based on ESP-01S.
 
-> A tiny wearable device based on ESP-01S + 0.96" OLED that generates a personalized RPG character card from your name and shows upcoming Italian cosplay conventions in real time.
-
----
-
-## ✨ Features
-
-- **🎭 Personal RPG Card** — Class, level (= your age!), XP bar and stats deterministically generated from your name
-- **📊 4 Stats** — Stamina, Craft, Style, Hype with animated bars
-- **📅 Live Events** — Fetches upcoming Italian cosplay conventions from [cosplayersitaliani.it](https://www.cosplayersitaliani.it)
-- **⏰ NTP Clock** — Internet-synced time with date and weekday
-- **📶 Browser WiFi Setup** — Captive portal configuration, no app needed
-- **💾 Persistent Memory** — WiFi credentials saved to EEPROM
-- **🔄 Auto Carousel** — Screens cycle every 5 seconds
-- **🔥 HOT! Alerts** — Events within 7 days blink with countdown
+![HexLions](https://img.shields.io/badge/by-HexLions-1D9E75?style=flat-square)
+![Platform](https://img.shields.io/badge/platform-ESP--01S-blue?style=flat-square)
+![Display](https://img.shields.io/badge/display-SSD1306%200.96%22-green?style=flat-square)
+![License](https://img.shields.io/badge/license-MIT-lightgrey?style=flat-square)
 
 ---
 
-## 🖥️ Screens
+## What it does
 
-| # | Screen | Description |
-|---|--------|-------------|
-| 1 | **RPG Card** | Class, level, large name, XP bar, Stamina and Style |
-| 2 | **Stats** | All 4 stats with progress bars and numeric values |
-| 3 | **Events** | Convention carousel with name, venue, date and countdown |
-| 4 | **Clock** | Large time display, date, weekday |
+Each device is personalized with the recipient's name and birthday. On first boot it self-configures via Access Point — no cables, no IDE needed. It then connects to WiFi, syncs the clock via NTP, and automatically fetches upcoming cosplay events in Italy from [cosplayersitaliani.it](https://www.cosplayersitaliani.it).
+
+The display cycles through 4 screens every 5 seconds:
+
+| Screen | Content |
+|--------|---------|
+| **RPG Card** | Large name, class, level (= age), XP bar |
+| **Stats** | STAMINA · CRAFT · STYLE · HYPE with animated bars |
+| **Events** | Carousel of events for the current + next 2 months, one every 5s |
+| **Clock** | NTP time with blinking colon, date, day of the week |
+
+Stats are generated deterministically from a hash of the name — same name always yields the same stats. They look random but are fully reproducible.
 
 ---
 
-## 🔧 Hardware
-
-| Component | Details |
-|-----------|---------|
-| Microcontroller | **ESP-01S** (ESP8266, built-in WiFi) |
-| Display | **SSD1306** OLED 0.96" 128x64 pixels, I2C |
-| Power | 3.3V via micro-USB or power bank |
-
-### Wiring
+## Hardware
 
 ```
-ESP-01S          SSD1306
-────────         ───────
-GPIO0    ───►    SDA
-GPIO2    ───►    SCL
-3.3V     ───►    VCC
-GND      ───►    GND
+ESP-01S  ──────────────  SSD1306 0.96" I2C
+GPIO0    ──────────────  SDA
+GPIO2    ──────────────  SCL
+3.3V     ──────────────  VCC
+GND      ──────────────  GND
+                         addr: 0x3C
+```
+
+**Case:** `Mini_ESP01.stl` — ~38 × 36 × 38 mm, print in PLA or PETG.
+
+---
+
+## Repository structure
+
+```
+CosplayRPG/
+├── CosplayRPG.ino      ← Arduino firmware (single file)
+├── Mini_ESP01.stl      ← 3D printed enclosure
+└── README.md
 ```
 
 ---
 
-## 📦 Required Libraries
+## Configuration
 
-Install from Arduino Library Manager:
-
-- `Adafruit SSD1306`
-- `Adafruit GFX Library`
-- `ArduinoJson` (v6.x)
-- `NTPClient`
-
----
-
-## ⚙️ Customization
-
-Edit these two lines in the `.ino` file:
+Open `CosplayRPG.ino` and edit **only these two lines** at the top:
 
 ```cpp
-#define CHAR_NAME      "NAME"          // max 8 chars, UPPERCASE
-#define CHAR_BIRTHDAY  "01/01/2000"    // DD/MM/YYYY
+#define CHAR_NAME      "GIADA"        // recipient's name, max 8 chars UPPERCASE
+#define CHAR_BIRTHDAY  "14/03/1998"   // DD/MM/YYYY — used to compute age and stats
 ```
 
-Stats are deterministically generated from your name hash — the same name always produces the same values!
-
-### Available Classes
-
-Class is assigned based on dominant stats:
-
-| Class | Condition |
-|-------|-----------|
-| COSPLAYER | Style > 90 |
-| CRAFTER | Craft > 85 |
-| BARD | Hype > 90 |
-| WARRIOR, MAGE, ROGUE, PALADIN, RANGER | Assigned by name hash |
+For each gift, change `CHAR_NAME` and `CHAR_BIRTHDAY`, flash the firmware and you're done.
 
 ---
 
-## 📶 WiFi Setup
+## Required libraries
 
-1. Power on the device — if no network is saved, it creates an access point
-2. Connect to **`CosplayRPG-Setup`** (password: `cosplay123`)
-3. Open your browser → **`192.168.4.1`**
-4. Enter your WiFi SSID and password
-5. The device connects, syncs time and fetches events
+Install via **Arduino IDE → Library Manager**:
 
-> Configuration is saved to EEPROM and remembered even after power off.
+| Library | Version |
+|---------|---------|
+| Adafruit SSD1306 | ≥ 2.5 |
+| Adafruit GFX Library | ≥ 1.11 |
+| ArduinoJson | 6.x |
+| NTPClient | ≥ 3.2 |
 
----
+Board package: `ESP8266` — add this URL in Arduino IDE preferences:
+`https://arduino.esp8266.com/stable/package_esp8266com_index.json`
 
-## 🏗️ Build & Flash
-
-1. Open `CosplayRPG.ino` in Arduino IDE
-2. Select board: **Generic ESP8266 Module**
-3. Set your name and birthday (see Customization)
-4. Flash via USB-serial programmer for ESP-01
-
----
-
-## 📄 License
-
-MIT — Use, modify and share freely.
+Upload settings:
+- Board: **Generic ESP8266 Module**
+- Flash size: **1MB (FS: none)**
+- Upload speed: **115200**
 
 ---
 
-<p align="center">
-  <b>⚔️ CosplayRPG</b> — by <a href="https://github.com/HexLions">HexLions</a><br>
-  <a href="https://instagram.com/exibiliar.photography">@exibiliar.photography</a>
-</p>
+## First boot — WiFi setup
+
+1. The ESP starts in **Access Point** mode: network `CosplayRPG-Setup`, password `cosplay123`
+2. Connect with your phone or PC
+3. The **captive portal** opens automatically (or navigate to `192.168.4.1`)
+4. Enter your home network SSID and password
+5. Credentials are stored in EEPROM and survive reboots
+
+If the saved network becomes unavailable, the ESP automatically falls back to AP mode.
+
+---
+
+## How the event fetch works
+
+The firmware fetches the monthly pages from cosplayersitaliani.it over HTTPS:
+
+```
+https://www.cosplayersitaliani.it/fiere_comics_categoria/fiere-comics-{month}-{year}/
+```
+
+The URL is built dynamically from the NTP clock — no manual configuration needed. It downloads the current month and the next two, filters out past events, and displays one event at a time in a carousel with a 5-second slide interval. The fetch repeats every 60 minutes.
+
+---
+
+## Advanced configuration
+
+```cpp
+#define AP_SSID          "CosplayRPG-Setup"  // AP network name for setup
+#define AP_PASSWORD      "cosplay123"         // AP password (min 8 chars)
+#define FETCH_INTERVAL   60                   // minutes between event fetches
+```
+
+---
+
+## License
+
+MIT — do whatever you want, a credit to HexLions is always appreciated.
+
+---
+
+*A project by [HexLions](https://github.com/HexLions) — Cosimo Leoni*
